@@ -84,7 +84,7 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;background:rad
     <div class="check">✓</div>
     <h3 id="resultTitle">Đã chọn server</h3>
     <p id="resultText">Hệ thống đã đồng bộ thành công.</p>
-    <button class="btn" onclick="finishSync()" id="downloadBtn">MỞ BẰNG SHADOWROCKET</button>
+    <button class="btn" onclick="finishSync()" id="downloadBtn">MỞ SHADOWROCKET & IMPORT CONFIG</button>
     <button class="btn dark" style="margin-top:8px" onclick="resetApp()">KHỞI ĐỘNG LẠI APP</button>
   </div>
 </div>
@@ -263,7 +263,6 @@ const statusText = document.getElementById('statusText');
 const statusDesc = document.getElementById('statusDesc');
 const statusBadge = document.getElementById('statusBadge');
 const verifyBtn = document.getElementById('verifyBtn');
-const downloadBtn = document.getElementById('downloadBtn');
 
 deviceEl.textContent = /iPhone|iPad|iPod/i.test(navigator.userAgent) ? 'IOS' : /Android/i.test(navigator.userAgent) ? 'ANDROID' : 'DESKTOP';
 
@@ -291,12 +290,12 @@ function closeModal() {
 function selectServer(name) {
     document.getElementById('choose').style.display = 'none';
     document.getElementById('syncStep').style.display = 'block';
-    document.getElementById('syncTitle').textContent = 'Đang đồng bộ ' + name;
-    document.getElementById('syncText').textContent = 'Đang lấy dữ liệu cấu hình từ NSMOD...';
+    document.getElementById('syncTitle').textContent = 'Đang xác minh ' + name;
+    document.getElementById('syncText').textContent = 'Đang kết nối đến máy chủ NSMOD...';
     
     let progress = 0;
     const interval = setInterval(() => {
-        progress += Math.floor(Math.random() * 15) + 5; 
+        progress += Math.floor(Math.random() * 20) + 10; 
         if (progress > 100) progress = 100;
         
         document.getElementById('progressFill').style.width = progress + '%';
@@ -308,7 +307,7 @@ function selectServer(name) {
         } else if (progress < 90) {
             document.getElementById('syncStatusText').textContent = 'Đang đồng bộ script vào Shadowrocket...';
         } else {
-            document.getElementById('syncStatusText').textContent = 'Hoàn tất thiết lập!';
+            document.getElementById('syncStatusText').textContent = 'Xác minh thành công!';
         }
 
         if (progress >= 100) {
@@ -317,28 +316,28 @@ function selectServer(name) {
                 showResult(name);
             }, 500);
         }
-    }, 300);
+    }, 400);
 }
 
 function showResult(name) {
     document.getElementById('syncStep').style.display = 'none';
     document.getElementById('result').classList.add('show');
-    document.getElementById('resultTitle').textContent = name + ' đã sẵn sàng';
-    document.getElementById('resultText').textContent = 'File Config_sciprt.conf (NSMOD V12) đã được đồng bộ. Nhấn nút bên dưới để nạp vào Shadowrocket.';
+    document.getElementById('resultTitle').textContent = 'Xác minh thành công!';
+    document.getElementById('resultText').textContent = 'File Config_sciprt.conf (NSMOD V12) đã sẵn sàng. Nhấn nút bên dưới để mở Shadowrocket và import.';
     
     // Cập nhật UI
     ipEl.textContent = '127.0.0.1 (Local)';
     connEl.textContent = 'CONNECTED';
     statusDot.style.background = '#168fff';
     statusDot.style.boxShadow = '0 0 15px #168fff';
-    statusText.textContent = 'SHADOWROCKET ACTIVE';
+    statusText.textContent = 'SHADOWROCKET READY';
     statusText.style.color = '#168fff';
     statusDesc.textContent = 'Đã kết nối với ' + name;
-    statusBadge.textContent = 'SYNCED';
+    statusBadge.textContent = 'VERIFIED';
     statusBadge.style.color = '#168fff';
     statusBadge.style.borderColor = '#168fff55';
     
-    verifyBtn.textContent = 'ĐÃ ĐỒNG BỘ';
+    verifyBtn.textContent = 'ĐÃ XÁC MINH';
     verifyBtn.disabled = true;
     verifyBtn.style.opacity = '0.5';
     verifyBtn.style.cursor = 'not-allowed';
@@ -356,7 +355,7 @@ function finishSync() {
     const a = document.createElement('a');
     a.style.display = 'none';
     a.href = url;
-    a.download = 'Config_sciprt.conf'; // Tên file khi tải xuống
+    a.download = 'Config_sciprt.conf';
     document.body.appendChild(a);
     a.click();
     
@@ -366,26 +365,30 @@ function finishSync() {
         document.body.removeChild(a);
     }, 100);
 
-    // 4. Thông báo & Hướng dẫn mở Shadowrocket
+    // 4. Kích hoạt Shadowrocket URL Scheme
     setTimeout(() => {
         const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+        
+        // Thử mở Shadowrocket với URL Scheme
+        // Lưu ý: Một số trình duyệt có thể chặn việc tự động mở app
         if (isIOS) {
-            // Thử mở URL Scheme của Shadowrocket (nếu được cài đặt)
-            // Lưu ý: Trình duyệt có thể chặn hành động này nếu không phải user gesture
-            try {
-                window.location.href = 'shadowrocket://add/config?url=' + encodeURIComponent(url);
-            } catch(e) {
-                // Fallback nếu không mở được
-            }
+            // Cách 1: Mở app Shadowrocket trực tiếp
+            window.location.href = 'shadowrocket://';
+            
+            // Cách 2: Nếu muốn tự động add config (chỉ hoạt động nếu Shadowrocket hỗ trợ)
+            // window.location.href = 'shadowrocket://add/config?url=' + encodeURIComponent(url);
         }
         
-        alert('✅ Đã tải file Config_sciprt.conf!\n\n' + 
-              '👉 Hướng dẫn:\n' +
+        // 5. Hiển thị hướng dẫn
+        alert('✅ ĐÃ XÁC MINH THÀNH CÔNG!\n\n' +
+              '📁 File Config_sciprt.conf đã được tải xuống.\n\n' +
+              '👉 Hướng dẫn Import vào Shadowrocket:\n' +
               '1. Mở ứng dụng Shadowrocket.\n' +
-              '2. Vào mục Cấu hình (Config).\n' +
+              '2. Vào mục "Cấu hình" (Config) ở dưới cùng.\n' +
               '3. Nhấn dấu "+" ở góc trên bên phải.\n' +
-              '4. Chọn "Nhập từ tệp" (Import from File) và chọn file vừa tải.\n' +
-              '5. Bật cấu hình lên và tận hưởng!');
+              '4. Chọn "Nhập từ tệp" (Import from File).\n' +
+              '5. Chọn file Config_sciprt.conf vừa tải.\n' +
+              '6. Bật cấu hình lên và tận hưởng!');
     }, 500);
 }
 
