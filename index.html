@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>TUN DEVELOPED</title>
+<title>Pkhang DEVELOPED - Shadowrocket Sync</title>
 <style>
 *{box-sizing:border-box}body{margin:0;min-height:100vh;background:#02070d;color:#edf7ff;font-family:Arial,sans-serif}
 body:before{content:"";position:fixed;inset:0;pointer-events:none;background:radial-gradient(circle at 50% 0,#123d63 0,transparent 38%)}
@@ -14,64 +14,405 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;background:rad
 .badge{font-size:9px;font-weight:900;color:#25e886;border:1px solid #25e88655;background:#25e88610;padding:6px 9px;border-radius:99px}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:13px}.info{background:#07111b;border:1px solid #183044;border-radius:11px;padding:10px}.k{font-size:9px;color:#5f788c;letter-spacing:1px}.v{font-size:12px;font-weight:800;margin-top:4px}
 .title{font-size:18px;font-weight:900}.desc{font-size:11px;color:#748ca0;margin-top:4px}.buttons{display:grid;gap:9px;margin-top:14px}
-.btn{display:block;border:1px solid #198ed355;border-radius:11px;padding:13px;text-align:center;text-decoration:none;color:white;font-size:11px;font-weight:900;background:linear-gradient(135deg,#086eb5,#163d7e);cursor:pointer}.dark{background:#0c1721}
+.btn{display:block;border:1px solid #198ed355;border-radius:11px;padding:13px;text-align:center;text-decoration:none;color:white;font-size:11px;font-weight:900;background:linear-gradient(135deg,#086eb5,#163d7e);cursor:pointer;transition:0.2s}
+.btn:hover{filter:brightness(1.2)}.dark{background:#0c1721}
 .row{display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px solid #ffffff0c;font-size:11px;color:#7890a3}.row:last-child{border:0}.row b{color:#e6f4ff}.footer{text-align:center;color:#4e687a;font-size:9px;margin-top:17px;letter-spacing:1px}
 .modal{position:fixed;inset:0;background:#000b;display:none;align-items:center;justify-content:center;padding:20px;z-index:10}.modal.show{display:flex}.box{width:min(390px,100%);background:#08131f;border:1px solid #1b5275;border-radius:18px;padding:18px;box-shadow:0 20px 70px #000}
 .box h2{margin:0;font-size:18px}.box p{color:#7690a4;font-size:11px;margin:6px 0 14px}.choice{padding:14px;border:1px solid #21445d;border-radius:12px;background:#0b1925;margin:9px 0;cursor:pointer}.choice:hover{border-color:#159cff}.choice strong{font-size:13px}.choice span{display:block;color:#6e899d;font-size:10px;margin-top:4px}.close{margin-top:12px;width:100%;background:#101c27}
 .result{display:none;text-align:center}.result.show{display:block}.check{font-size:38px;color:#25e886}.result h3{margin:7px 0}.result p{font-size:11px;color:#7890a3}
+.sync-container { margin: 15px 0; display: none; }
+.sync-container.show { display: block; }
+.progress-bar { width: 100%; height: 6px; background: #16334a; border-radius: 99px; overflow: hidden; margin-bottom: 10px; }
+.progress-fill { height: 100%; width: 0%; background: #25e886; transition: width 0.3s ease; box-shadow: 0 0 10px #25e886; }
+.sync-text { font-size: 11px; color: #25e886; font-weight: bold; text-align: center; }
 </style>
 </head>
 <body>
 <div class="app">
-<div class="top"><div class="logo">TUN DEVELOPED</div><div class="tag">PREMIUM CONTROL SYSTEM</div></div>
+<div class="top"><div class="logo">TUN DEVELOPED</div><div class="tag">SHADOWROCKET SYNC MODULE</div></div>
 
 <section class="card">
-<div class="status"><div class="left"><i class="dot"></i><div><div class="green">SYSTEM ONLINE</div><div class="muted">Há» thá»ng Äang hoáº¡t Äá»ng á»n Äá»nh</div></div></div><span class="badge">ONLINE</span></div>
+<div class="status"><div class="left"><i class="dot" id="statusDot"></i><div><div class="green" id="statusText">SYSTEM ONLINE</div><div class="muted" id="statusDesc">Hệ thống đang hoạt động ổn định</div></div></div><span class="badge" id="statusBadge">ONLINE</span></div>
 <div class="grid">
-<div class="info"><div class="k">IP ADDRESS</div><div class="v">Hidden</div></div><div class="info"><div class="k">COUNTRY</div><div class="v">VIETNAM</div></div>
-<div class="info"><div class="k">DEVICE</div><div class="v" id="device">MOBILE</div></div><div class="info"><div class="k">CONNECTION</div><div class="v">SECURE</div></div>
+<div class="info"><div class="k">IP ADDRESS</div><div class="v" id="ipAddr">Hidden</div></div><div class="info"><div class="k">COUNTRY</div><div class="v">VIETNAM</div></div>
+<div class="info"><div class="k">DEVICE</div><div class="v" id="device">MOBILE</div></div><div class="info"><div class="k">CONNECTION</div><div class="v" id="connStatus">SECURE</div></div>
 </div></section>
 
-<section class="card">
-<div class="title">Server Premium</div><div class="desc">Khu vá»±c dá»ch vá»¥ cao cáº¥p</div>
+<section class="card" id="mainActionCard">
+<div class="title">Server Premium</div><div class="desc">Khu vực dịch vụ cao cấp</div>
 <div class="buttons">
-<button class="btn" onclick="openVerify()">XÃC MINH QUYá»N</button>
-<a class="btn dark" href="https://t.me/" target="_blank">NHÃM TELEGRAM</a>
+<button class="btn" id="verifyBtn" onclick="openVerify()">XÁC MINH QUYỀN</button>
+<a class="btn dark" href="https://t.me/" target="_blank">NHÓM TELEGRAM</a>
 <button class="btn dark" onclick="openSupport()">SUPPORT</button>
 </div></section>
 
 <section class="card">
-<div class="title">Server Miá»n PhÃ­</div><div class="desc">ThÃ´ng tin mÃ¡y chá»§</div>
-<div class="row"><span>Server Status</span><span class="badge">ONLINE</span></div>
+<div class="title">Server Miễn Phí</div><div class="desc">Thông tin máy chủ</div>
+<div class="row"><span>Server Status</span><span class="badge" id="serverStatus">ONLINE</span></div>
 <div class="row"><span>Uptime</span><b id="time">00:00:00</b></div>
 <div class="row"><span>Server Load</span><b>LOW</b></div>
 <div class="row"><span>Access</span><b>PUBLIC</b></div>
 </section>
-<div class="footer">TUN DEVELOPED â¢ 2026 â¢ STATIC DEMO</div>
+<div class="footer">TUN DEVELOPED • 2026 • SHADOWROCKET READY</div>
 </div>
 
+<!-- Modal -->
 <div class="modal" id="modal">
 <div class="box">
-<div id="choose">
-<h2>Chá»n mÃ¡y chá»§</h2><p>Chá»n khu vá»±c báº¡n muá»n sá»­ dá»¥ng.</p>
-<div class="choice" onclick="selectServer('Server Miá»n PhÃ­')"><strong>ð¢ Server Miá»n PhÃ­</strong><span>Truy cáº­p cÃ´ng khai â¢ Online</span></div>
-<div class="choice" onclick="selectServer('Server Premium')"><strong>ðµ Server Premium</strong><span>Khu vá»±c cao cáº¥p â¢ Online</span></div>
-<button class="btn close" onclick="closeModal()">ÄÃNG</button>
+  <!-- Bước 1: Chọn Server -->
+  <div id="choose">
+    <h2>Chọn máy chủ</h2><p>Chọn khu vực bạn muốn sử dụng.</p>
+    <div class="choice" onclick="selectServer('Server Miễn Phí')"><strong>🟢 Server Miễn Phí</strong><span>Truy cập công khai • Online</span></div>
+    <div class="choice" onclick="selectServer('Server Premium')"><strong>🔵 Server Premium</strong><span>Khu vực cao cấp • Online</span></div>
+    <button class="btn close" onclick="closeModal()">ĐÓNG</button>
+  </div>
+
+  <!-- Bước 2: Đồng bộ -->
+  <div id="syncStep" class="result" style="display:none">
+    <div class="check" style="color:#168fff">⚙️</div>
+    <h3 id="syncTitle">Đang đồng bộ...</h3>
+    <p id="syncText">Vui lòng chờ trong giây lát.</p>
+    
+    <div class="sync-container show" id="progressContainer">
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      <div class="sync-text" id="syncStatusText">Đang kết nối máy chủ cục bộ...</div>
+    </div>
+  </div>
+
+  <!-- Bước 3: Hoàn tất -->
+  <div id="result" class="result">
+    <div class="check">✓</div>
+    <h3 id="resultTitle">Đã chọn server</h3>
+    <p id="resultText">Hệ thống đã đồng bộ thành công.</p>
+    <button class="btn" onclick="finishSync()" id="downloadBtn">MỞ BẰNG SHADOWROCKET</button>
+    <button class="btn dark" style="margin-top:8px" onclick="resetApp()">KHỞI ĐỘNG LẠI APP</button>
+  </div>
 </div>
-<div class="result" id="result">
-<div class="check">â</div><h3 id="resultTitle">ÄÃ£ chá»n server</h3>
-<p id="resultText">Server Äang online. ÄÃ¢y lÃ  giao diá»n demo nÃªn chÆ°a káº¿t ná»i há» thá»ng xÃ¡c minh tháº­t.</p>
-<button class="btn" onclick="closeModal()">TIáº¾P Tá»¤C</button>
 </div>
-</div></div>
 
 <script>
-document.getElementById('device').textContent=/iPhone|iPad|iPod/i.test(navigator.userAgent)?'IOS':/Android/i.test(navigator.userAgent)?'ANDROID':'DESKTOP';
-let started=Date.now();setInterval(()=>{let s=Math.floor((Date.now()-started)/1000),h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=s%60;document.getElementById('time').textContent=[h,m,x].map(n=>String(n).padStart(2,'0')).join(':')},1000);
-function openVerify(){document.getElementById('modal').classList.add('show');document.getElementById('choose').style.display='block';document.getElementById('result').classList.remove('show')}
-function closeModal(){document.getElementById('modal').classList.remove('show')}
-function selectServer(name){document.getElementById('choose').style.display='none';document.getElementById('result').classList.add('show');document.getElementById('resultTitle').textContent=name;document.getElementById('resultText').textContent='MÃ¡y chá»§ ÄÃ£ ÄÆ°á»£c chá»n vÃ  Äang ONLINE. Chá»©c nÄng xÃ¡c minh tháº­t cáº§n backend riÃªng.'}
-function openSupport(){alert('Support demo: báº¡n cÃ³ thá» thay nÃºt nÃ y báº±ng link Telegram/Zalo cá»§a mÃ¬nh.')}
+// ==========================================================
+// NỘI DUNG FILE CONFIG_SCIPRT.CONF CỦA BẠN
+// ==========================================================
+const CONFIG_CONTENT = `# ==========================================================
+# NSMOD FREEFIRE ULTIMATE INTERCEPTOR V12
+# Tác giả: NSMOD
+# Định dạng: ScriptTunDeveloped.conf
+# Chức năng: Can thiệp Request/Response, Bypass Anti-Cheat,
+#            Khóa tâm Head, Triệt rung tâm, Tối ưu kết nối.
+# ==========================================================
+
+[CONFIG]
+DEBUG=true
+LOG_LEVEL=INFO
+HEADLOCK_ENABLED=true
+HEADLOCK_SENSITIVITY=0.0
+HEADLOCK_SMOOTHING=0.0
+ANTI_SHAKE_ENABLED=true
+SHAKE_THRESHOLD=0.01
+
+[TARGETS]
+BACKPACK=GetBackpack
+HOT_UPDATE=ABHotUpdates
+ANTI_CHEAT=CheckHackBehavior
+MATCHMAKING=GetMatchmakingBlacklist
+LOGIN=MajorLogin
+EVENT=LogEvent
+DELIVERY=deliveryFlaglos
+AIM=AimAssist
+SENSITIVITY=Sensitivity
+
+[HEADERS]
+User-Agent=GarenaFreeFire/1.130.18 (iPhone; iOS 17.0; Scale/3.00)
+X-Unity-Version=2021.3.14f1
+Accept-Encoding=gzip, deflate, br
+Content-Type=application/json
+X-GA=v1
+X-Requested-With=XMLHttpRequest
+
+[SCRIPT]
+var NSMOD_CONFIG = {
+    DEBUG: true,
+    LOG_LEVEL: 'INFO',
+    HEADLOCK: {
+        ENABLED: true,
+        SENSITIVITY: 0.0,
+        SMOOTHING: 0.0,
+        ANTI_SHAKE: true,
+        SHAKE_THRESHOLD: 0.01
+    },
+    TARGETS: {
+        BACKPACK: 'GetBackpack',
+        HOT_UPDATE: 'ABHotUpdates',
+        ANTI_CHEAT: 'CheckHackBehavior',
+        MATCHMAKING: 'GetMatchmakingBlacklist',
+        LOGIN: 'MajorLogin',
+        EVENT: 'LogEvent',
+        DELIVERY: 'deliveryFlaglos',
+        AIM: 'AimAssist',
+        SENSITIVITY: 'Sensitivity'
+    },
+    FAKE_HEADERS: {
+        'User-Agent': 'GarenaFreeFire/1.130.18 (iPhone; iOS 17.0; Scale/3.00)',
+        'X-Unity-Version': '2021.3.14f1',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'Content-Type': 'application/json',
+        'X-GA': 'v1',
+        'X-Requested-With': 'XMLHttpRequest'
+    }
+};
+
+function onRequest(request) {
+    if (request.headers) {
+        Object.assign(request.headers, NSMOD_CONFIG.FAKE_HEADERS);
+    }
+    if (request.url.includes(NSMOD_CONFIG.TARGETS.ANTI_CHEAT)) {
+        if (request.body) {
+            try {
+                var body = JSON.parse(request.body);
+                body.is_hacked = false;
+                body.cheat_detected = 0;
+                body.ban_time = 0;
+                body.reason = '';
+                request.body = JSON.stringify(body);
+            } catch (e) {}
+        }
+    }
+    if (request.url.includes(NSMOD_CONFIG.TARGETS.BACKPACK)) {
+        if (request.body) {
+            try {
+                var body = JSON.parse(request.body);
+                body.region = 'VN';
+                body.platform = 'ios';
+                body.lang = 'vi';
+                request.body = JSON.stringify(body);
+            } catch (e) {}
+        }
+    }
+    if (request.url.includes(NSMOD_CONFIG.TARGETS.AIM)) {
+        if (request.body) {
+            try {
+                var body = JSON.parse(request.body);
+                body.sensitivity = NSMOD_CONFIG.HEADLOCK.SENSITIVITY;
+                body.smoothing = NSMOD_CONFIG.HEADLOCK.SMOOTHING;
+                body.lock_head = true;
+                body.anti_shake = NSMOD_CONFIG.HEADLOCK.ANTI_SHAKE;
+                request.body = JSON.stringify(body);
+            } catch (e) {}
+        }
+    }
+    if (request.url.includes(NSMOD_CONFIG.TARGETS.SENSITIVITY)) {
+        if (request.body) {
+            try {
+                var body = JSON.parse(request.body);
+                body.shake_threshold = NSMOD_CONFIG.HEADLOCK.SHAKE_THRESHOLD;
+                body.filter_shake = true;
+                request.body = JSON.stringify(body);
+            } catch (e) {}
+        }
+    }
+    if (request.url.includes(NSMOD_CONFIG.TARGETS.LOGIN)) {
+        if (request.body) {
+            try {
+                var body = JSON.parse(request.body);
+                body.region = 'VN';
+                body.lang = 'vi';
+                request.body = JSON.stringify(body);
+            } catch (e) {}
+        }
+    }
+    return request;
+}
+
+function onResponse(response) {
+    if (response.headers && response.headers['content-type'] && response.headers['content-type'].includes('application/json')) {
+        try {
+            var data = JSON.parse(response.body);
+            if (response.url.includes(NSMOD_CONFIG.TARGETS.ANTI_CHEAT)) {
+                data = { status: 0, message: 'Clean', ban_time: 0, is_hacked: false };
+            }
+            if (response.url.includes(NSMOD_CONFIG.TARGETS.MATCHMAKING)) {
+                data = { status: 0, blacklist: [] };
+            }
+            if (response.url.includes(NSMOD_CONFIG.TARGETS.EVENT)) {
+                data = { status: 0, message: 'Logged' };
+            }
+            if (response.url.includes(NSMOD_CONFIG.TARGETS.AIM)) {
+                data = { status: 0, sensitivity: NSMOD_CONFIG.HEADLOCK.SENSITIVITY, smoothing: NSMOD_CONFIG.HEADLOCK.SMOOTHING, lock_head: true };
+            }
+            if (response.url.includes(NSMOD_CONFIG.TARGETS.SENSITIVITY)) {
+                data = { status: 0, shake_threshold: NSMOD_CONFIG.HEADLOCK.SHAKE_THRESHOLD, filter_shake: true };
+            }
+            response.body = JSON.stringify(data);
+        } catch (e) {}
+    }
+    return response;
+}
+
+if (typeof module !== 'undefined') { module.exports = { onRequest, onResponse }; }`;
+
+// ==========================================================
+// LOGIC XỬ LÝ
+// ==========================================================
+
+const deviceEl = document.getElementById('device');
+const ipEl = document.getElementById('ipAddr');
+const connEl = document.getElementById('connStatus');
+const statusDot = document.getElementById('statusDot');
+const statusText = document.getElementById('statusText');
+const statusDesc = document.getElementById('statusDesc');
+const statusBadge = document.getElementById('statusBadge');
+const verifyBtn = document.getElementById('verifyBtn');
+const downloadBtn = document.getElementById('downloadBtn');
+
+deviceEl.textContent = /iPhone|iPad|iPod/i.test(navigator.userAgent) ? 'IOS' : /Android/i.test(navigator.userAgent) ? 'ANDROID' : 'DESKTOP';
+
+let started = Date.now();
+setInterval(() => {
+    let s = Math.floor((Date.now() - started) / 1000),
+        h = Math.floor(s / 3600),
+        m = Math.floor(s % 3600 / 60),
+        x = s % 60;
+    document.getElementById('time').textContent = [h, m, x].map(n => String(n).padStart(2, '0')).join(':');
+}, 1000);
+
+function openVerify() {
+    document.getElementById('modal').classList.add('show');
+    document.getElementById('choose').style.display = 'block';
+    document.getElementById('syncStep').style.display = 'none';
+    document.getElementById('result').classList.remove('show');
+    document.getElementById('progressFill').style.width = '0%';
+}
+
+function closeModal() {
+    document.getElementById('modal').classList.remove('show');
+}
+
+function selectServer(name) {
+    document.getElementById('choose').style.display = 'none';
+    document.getElementById('syncStep').style.display = 'block';
+    document.getElementById('syncTitle').textContent = 'Đang đồng bộ ' + name;
+    document.getElementById('syncText').textContent = 'Đang lấy dữ liệu cấu hình từ NSMOD...';
+    
+    let progress = 0;
+    const interval = setInterval(() => {
+        progress += Math.floor(Math.random() * 15) + 5; 
+        if (progress > 100) progress = 100;
+        
+        document.getElementById('progressFill').style.width = progress + '%';
+        
+        if (progress < 30) {
+            document.getElementById('syncStatusText').textContent = 'Đang kết nối máy chủ cục bộ...';
+        } else if (progress < 60) {
+            document.getElementById('syncStatusText').textContent = 'Đang tải file Config_sciprt.conf...';
+        } else if (progress < 90) {
+            document.getElementById('syncStatusText').textContent = 'Đang đồng bộ script vào Shadowrocket...';
+        } else {
+            document.getElementById('syncStatusText').textContent = 'Hoàn tất thiết lập!';
+        }
+
+        if (progress >= 100) {
+            clearInterval(interval);
+            setTimeout(() => {
+                showResult(name);
+            }, 500);
+        }
+    }, 300);
+}
+
+function showResult(name) {
+    document.getElementById('syncStep').style.display = 'none';
+    document.getElementById('result').classList.add('show');
+    document.getElementById('resultTitle').textContent = name + ' đã sẵn sàng';
+    document.getElementById('resultText').textContent = 'File Config_sciprt.conf (NSMOD V12) đã được đồng bộ. Nhấn nút bên dưới để nạp vào Shadowrocket.';
+    
+    // Cập nhật UI
+    ipEl.textContent = '127.0.0.1 (Local)';
+    connEl.textContent = 'CONNECTED';
+    statusDot.style.background = '#168fff';
+    statusDot.style.boxShadow = '0 0 15px #168fff';
+    statusText.textContent = 'SHADOWROCKET ACTIVE';
+    statusText.style.color = '#168fff';
+    statusDesc.textContent = 'Đã kết nối với ' + name;
+    statusBadge.textContent = 'SYNCED';
+    statusBadge.style.color = '#168fff';
+    statusBadge.style.borderColor = '#168fff55';
+    
+    verifyBtn.textContent = 'ĐÃ ĐỒNG BỘ';
+    verifyBtn.disabled = true;
+    verifyBtn.style.opacity = '0.5';
+    verifyBtn.style.cursor = 'not-allowed';
+}
+
+// Hàm tạo file và kích hoạt Shadowrocket
+function finishSync() {
+    closeModal();
+    
+    // 1. Tạo Blob từ nội dung config
+    const blob = new Blob([CONFIG_CONTENT], { type: 'text/plain' });
+    const url = window.URL.createObjectURL(blob);
+    
+    // 2. Tạo thẻ <a> để tải file
+    const a = document.createElement('a');
+    a.style.display = 'none';
+    a.href = url;
+    a.download = 'Config_sciprt.conf'; // Tên file khi tải xuống
+    document.body.appendChild(a);
+    a.click();
+    
+    // 3. Giải phóng bộ nhớ
+    setTimeout(() => {
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+    }, 100);
+
+    // 4. Thông báo & Hướng dẫn mở Shadowrocket
+    setTimeout(() => {
+        const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+        if (isIOS) {
+            // Thử mở URL Scheme của Shadowrocket (nếu được cài đặt)
+            // Lưu ý: Trình duyệt có thể chặn hành động này nếu không phải user gesture
+            try {
+                window.location.href = 'shadowrocket://add/config?url=' + encodeURIComponent(url);
+            } catch(e) {
+                // Fallback nếu không mở được
+            }
+        }
+        
+        alert('✅ Đã tải file Config_sciprt.conf!\n\n' + 
+              '👉 Hướng dẫn:\n' +
+              '1. Mở ứng dụng Shadowrocket.\n' +
+              '2. Vào mục Cấu hình (Config).\n' +
+              '3. Nhấn dấu "+" ở góc trên bên phải.\n' +
+              '4. Chọn "Nhập từ tệp" (Import from File) và chọn file vừa tải.\n' +
+              '5. Bật cấu hình lên và tận hưởng!');
+    }, 500);
+}
+
+function resetApp() {
+    closeModal();
+    ipEl.textContent = 'Hidden';
+    connEl.textContent = 'SECURE';
+    statusDot.style.background = '#25e886';
+    statusDot.style.boxShadow = '0 0 15px #25e886';
+    statusText.textContent = 'SYSTEM ONLINE';
+    statusText.style.color = '#25e886';
+    statusDesc.textContent = 'Hệ thống đang hoạt động ổn định';
+    statusBadge.textContent = 'ONLINE';
+    statusBadge.style.color = '#25e886';
+    statusBadge.style.borderColor = '#25e88655';
+    
+    verifyBtn.textContent = 'XÁC MINH QUYỀN';
+    verifyBtn.disabled = false;
+    verifyBtn.style.opacity = '1';
+    verifyBtn.style.cursor = 'pointer';
+    
+    openVerify();
+}
+
+function openSupport() {
+    alert('Support: Vui lòng liên hệ Telegram để được hỗ trợ.');
+}
 </script>
 </body>
 </html>
