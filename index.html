@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>TUN DEVELOPED</title>
+<style>
+:root{
+ --bg:#03070d;--card:#08111c;--card2:#0b1724;--line:#173047;
+ --blue:#159cff;--blue2:#5bc5ff;--green:#24e987;--text:#edf7ff;--muted:#7891a5;
+}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Inter,Arial,sans-serif;color:var(--text)}
+body{
+ background:
+ radial-gradient(700px 350px at 50% -80px,rgba(15,142,255,.27),transparent 65%),
+ radial-gradient(450px 350px at 100% 55%,rgba(0,115,255,.08),transparent 70%),
+ #02060b;
+}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;background:linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px);background-size:100% 4px;opacity:.25}
+.app{width:min(455px,100%);margin:auto;padding:18px 14px 30px}
+.top{text-align:center;padding:9px 0 18px}
+.brand{font-weight:950;font-size:29px;letter-spacing:3px;text-shadow:0 0 9px rgba(55,186,255,.65),0 0 28px rgba(0,126,255,.3)}
+.tag{margin-top:6px;font-size:10px;letter-spacing:2.6px;color:#66849b}
+.card{
+ position:relative;overflow:hidden;margin:0 0 13px;padding:16px;
+ border:1px solid rgba(60,157,218,.2);border-radius:17px;
+ background:linear-gradient(145deg,rgba(11,25,39,.94),rgba(5,13,22,.96));
+ box-shadow:0 12px 35px rgba(0,0,0,.32),inset 0 1px rgba(255,255,255,.025);
+}
+.card:after{content:"";position:absolute;width:130px;height:130px;right:-80px;top:-80px;background:#0a9cff;filter:blur(55px);opacity:.10}
+.head{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.headLeft{display:flex;align-items:center;gap:10px}
+.pulse{width:10px;height:10px;border-radius:50%;background:var(--green);box-shadow:0 0 5px var(--green),0 0 17px rgba(36,233,135,.75);animation:pulse 1.6s infinite}
+@keyframes pulse{50%{opacity:.45;transform:scale(.8)}}
+.big{font-size:14px;font-weight:900}.small{font-size:10px;color:var(--muted);margin-top:3px}
+.badge{font-size:9px;font-weight:900;color:var(--green);padding:6px 9px;border-radius:99px;background:rgba(36,233,135,.07);border:1px solid rgba(36,233,135,.22)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:13px}
+.info{padding:10px 11px;border:1px solid rgba(83,135,166,.12);border-radius:11px;background:rgba(0,0,0,.16)}
+.k{font-size:9px;color:#5f788d;text-transform:uppercase;letter-spacing:1px}.v{font-size:12px;font-weight:800;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.title{font-size:18px;font-weight:950}.desc{font-size:11px;color:#748da1;margin-top:4px}
+.buttons{display:grid;gap:9px;margin-top:14px}
+.btn{
+ border:1px solid rgba(49,170,255,.35);border-radius:11px;padding:13px 10px;
+ text-align:center;text-decoration:none;color:#fff;font-size:11px;font-weight:950;letter-spacing:.4px;
+ background:linear-gradient(135deg,#0b71ba,#123e81);
+ box-shadow:0 7px 22px rgba(0,104,206,.15);transition:.18s;
+}
+.btn:active{transform:scale(.985);filter:brightness(1.15)}
+.btn.dark{background:linear-gradient(135deg,#101e2c,#0a1119);border-color:#1a3348}
+.rows{margin-top:11px}.row{display:flex;justify-content:space-between;align-items:center;padding:11px 1px;border-bottom:1px solid rgba(255,255,255,.055);font-size:11px;color:#7890a3}.row:last-child{border:0}.row strong{color:#dcecf7;font-size:11px}
+.progress{height:5px;border-radius:99px;background:#101e2b;margin-top:13px;overflow:hidden}.bar{width:72%;height:100%;background:linear-gradient(90deg,#0879d1,#5bc5ff);box-shadow:0 0 10px #159cff}
+.footer{text-align:center;color:#496276;font-size:9px;letter-spacing:1px;margin-top:16px}
+.toast{position:fixed;left:50%;bottom:20px;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:#0d1b28;border:1px solid #204762;border-radius:12px;padding:11px 15px;font-size:11px;box-shadow:0 12px 35px #000;transition:.25s;z-index:5}.toast.show{opacity:1;transform:translate(-50%,0)}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top">
+    <div class="brand">TUN DEVELOPED</div>
+    <div class="tag">PREMIUM CONTROL SYSTEM</div>
+  </div>
+
+  <section class="card">
+    <div class="head">
+      <div class="headLeft">
+        <span class="pulse"></span>
+        <div><div class="big">SYSTEM ONLINE</div><div class="small">Hệ thống đang hoạt động ổn định</div></div>
+      </div>
+      <span class="badge">ONLINE</span>
+    </div>
+    <div class="grid">
+      <div class="info"><div class="k">IP ADDRESS</div><div class="v">Hidden</div></div>
+      <div class="info"><div class="k">COUNTRY</div><div class="v">VIETNAM</div></div>
+      <div class="info"><div class="k">DEVICE</div><div class="v" id="device">MOBILE</div></div>
+      <div class="info"><div class="k">CONNECTION</div><div class="v">SECURE</div></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="title">Server Premium</div>
+    <div class="desc">Khu vực dịch vụ cao cấp</div>
+    <div class="buttons">
+      <a class="btn" href="#" onclick="toast('Demo xác minh: chưa kết nối backend');return false">XÁC MINH QUYỀN</a>
+      <a class="btn dark" href="https://t.me/" target="_blank" rel="noopener">NHÓM TELEGRAM</a>
+      <a class="btn dark" href="#" onclick="toast('Support demo');return false">SUPPORT</a>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="title">Server Miễn Phí</div>
+    <div class="desc">Trạng thái máy chủ</div>
+    <div class="rows">
+      <div class="row"><span>Server Status</span><span class="badge">ONLINE</span></div>
+      <div class="row"><span>Uptime</span><strong id="time">00:00:00</strong></div>
+      <div class="row"><span>Server Load</span><strong>LOW</strong></div>
+      <div class="row"><span>Access</span><strong>PUBLIC</strong></div>
+    </div>
+    <div class="progress"><div class="bar"></div></div>
+  </section>
+
+  <div class="footer">TUN DEVELOPED • 2026 • STATIC WEBSITE DEMO</div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+document.getElementById('device').textContent =
+ /iPhone|iPad|iPod/i.test(navigator.userAgent) ? 'IOS' :
+ /Android/i.test(navigator.userAgent) ? 'ANDROID' : 'DESKTOP';
+
+const started=Date.now();
+setInterval(()=>{
+ let s=Math.floor((Date.now()-started)/1000),h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=s%60;
+ document.getElementById('time').textContent=[h,m,x].map(n=>String(n).padStart(2,'0')).join(':');
+},1000);
+
+function toast(t){
+ const e=document.getElementById('toast');e.textContent=t;e.classList.add('show');
+ setTimeout(()=>e.classList.remove('show'),2200);
+}
+</script>
+</body>
+</html>
